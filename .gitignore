@@ -1,55 +1,24 @@
-# Prerequisites
-*.d
-
-# Object files
+# --- Build & Output ---
+build/
 *.o
-*.ko
 *.obj
 *.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
 *.hex
+*.bin
+*.map
+*.hex
+*.d
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+# --- Zephyr/Python Environment ---
+.venv/
+env/
+zephyr-sdk/
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# --- IDE & OS ---
+.vscode/
+.idea/
+.DS_Store
+*.swp
 
-# debug information files
-*.dwo
+# --- Ngoại trừ file phao cứu sinh ---
+!bin/LoRaStudio_nrf54l15_xiao_v1.5.2.elf
