@@ -1,10 +1,16 @@
-// /*
-//  * Copyright (c) 2024 Semtech Corporation
-//  *
-//  * SPDX-License-Identifier: Apache-2.0
-//  */
+/*
+ * Copyright (c) 2024 Semtech Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 / {
+	chosen {
+		zephyr,display = &ssd1306;
+		zephyr,console = &xiao_serial;
+		zephyr,shell-uart = &xiao_serial;
+	};
+
 	aliases {
 		smtc-watchdog = &wdt31;
 		smtc-user-button = &usr_btn;
@@ -22,12 +28,31 @@
 	};
 };
 
+/* Enable Serial for logging */
 &xiao_serial {
-	status = "disabled";
+	status = "okay";
 };
 
+/* Enable I2C22 for OLED display on XIAO nRF54L15 */
 &i2c22 {
-	status = "disabled";
+	status = "okay";
+	pinctrl-0 = <&i2c22_default>;
+	pinctrl-1 = <&i2c22_sleep>;
+	pinctrl-names = "default", "sleep";
+	
+	ssd1306: ssd1306@3c {
+		compatible = "solomon,ssd1306fb";
+		reg = <0x3c>;
+		width = <128>;
+		height = <64>;
+		segment-offset = <0>;
+		page-offset = <0>;
+		display-offset = <0>;
+		multiplex-ratio = <63>;
+		segment-remap;
+		com-invdir;
+		prechargep = <0x22>;
+	};
 };
 
 &i2c30 {

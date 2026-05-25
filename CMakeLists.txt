@@ -1,28 +1,51 @@
 cmake_minimum_required(VERSION 3.20)
 
-# Trỏ tới Zephyr RTOS trong thư mục gốc của hãng
+# ==========================================================
+# Zephyr Configuration
+# ==========================================================
 set(ZEPHYR_BASE /home/dashtrad/lora_usp_workspace/zephyr)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(lr2021-tdoa-firmware)
 
-# Đường dẫn gốc của thư mục hãng (để tham chiếu file)
+# ==========================================================
+# Application Selection (Default: pingpong)
+# Usage: west build -b ... -- -DAPP_TYPE=ranging
+# ==========================================================
+set(APP_TYPE pingpong CACHE STRING "Application type to compile (pingpong or ranging)")
+
+if(APP_TYPE STREQUAL "ranging")
+    message(STATUS "Configuring application: RANGING")
+    
+    target_sources(app PRIVATE 
+        src/ranging/main.c
+        src/ranging/app_ranging_result_output.c
+        src/ranging/oled_display.c
+        src/ranging/app_ranging_hopping.c
+    )
+    
+    zephyr_include_directories(src/ranging/)
+    
+    # Ranging specific definitions
+    target_compile_definitions(app PRIVATE DISABLE_RANGING_LOG)
+
+else()
+    message(STATUS "Configuring application: PINGPONG")
+    
+    target_sources(app PRIVATE 
+        src/pingpong/main.c
+        src/pingpong/app_periodic_uplink.c
+        src/pingpong/app_ping_pong.c
+    )
+    
+    zephyr_include_directories(src/pingpong/)
+    
+    # Fix for pingpong busy-wait issue
+    target_compile_definitions(app PRIVATE SUBORDINATE_PROCESSING_TIME_MS=50)
+endif()
+
+# ==========================================================
+# Semtech Driver Configuration (USP)
+# ==========================================================
 set(VENDOR_WS /home/dashtrad/lora_usp_workspace)
-
-# Thêm mã nguồn: file main.c của bạn + các file logic mẫu từ thư mục hãng
-target_sources(app PRIVATE 
-    src/main.c
-    ${VENDOR_WS}/modules/lib/usp/examples/main_examples/ping_pong_example/app_periodic_uplink.c
-    ${VENDOR_WS}/modules/lib/usp/examples/main_examples/ping_pong_example/app_ping_pong.c
-)
-
-# Thêm đường dẫn include (chỉ đọc) từ thư mục hãng
-zephyr_include_directories(
-    ${VENDOR_WS}/modules/lib/usp/examples/main_examples/ping_pong_example
-)
-
-# Fix cho lỗi busy-wait: tăng thời gian xử lý phản hồi lên 50ms
-target_compile_definitions(app PRIVATE SUBORDINATE_PROCESSING_TIME_MS=50)
-
-# Đăng ký module USP từ thư mục hãng để Zephyr nhận diện được driver radio
 list(APPEND ZEPHYR_EXTRA_MODULES ${VENDOR_WS}/application)
