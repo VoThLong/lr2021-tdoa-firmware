@@ -7,8 +7,8 @@
 / {
 	chosen {
 		zephyr,display = &ssd1306;
-		zephyr,console = &xiao_serial;
-		zephyr,shell-uart = &xiao_serial;
+		zephyr,console = &uart20;
+		zephyr,shell-uart = &uart20;
 	};
 
 	aliases {

@@ -46,6 +46,11 @@
 #include "smtc_sw_platform_helper.h"
 #include "smtc_modem_hal.h"
 
+#if DT_HAS_CHOSEN( zephyr_display )
+#include "oled_display.h"
+#include <stdio.h>
+#endif
+
 // Use unified logging system
 #define RAC_LOG_APP_PREFIX "PING-PONG"
 #include "smtc_rac_log.h"
@@ -90,12 +95,12 @@ static const smtc_rac_scheduling_t    ASAP                      = SMTC_RAC_ASAP_
 static const smtc_rac_scheduling_t    SCHEDULED                 = SMTC_RAC_SCHEDULED_TRANSACTION;  // (alias)
 static const smtc_rac_lora_syncword_t SYNC_WORD                 = LORA_PRIVATE_NETWORK_SYNCWORD;   // (alias)
 static const uint32_t                 NO_DELAY                  = 0;                               // ms
-static const uint32_t                 DELAY                     = 250;                             // ms
+static const uint32_t                 DELAY                     = 1000;                            // ms (slowed down from 250)
 static const uint32_t                 RX_PROCESSING_TIME        = 10;                              // ms (configurable)
 static const uint32_t                 TX_SUBORDINATE_TIME       = SUBORDINATE_PROCESSING_TIME_MS;  // ms (configurable)
-static const uint32_t                 MANAGER_RX_TIMEOUT        = 500;                             // ms
+static const uint32_t                 MANAGER_RX_TIMEOUT        = 2000;                            // ms
 static const uint32_t                 SUBORDINATE_RX_TIMEOUT    = 30000;                           // ms
-static const uint8_t                  MAX_EXCHANGE_COUNT        = 25;                              // (no unit)
+static const uint16_t                 MAX_EXCHANGE_COUNT        = 9999;                            // increased from 25
 static const uint8_t                  MAX_RETRY_COUNT           = 5;                               // (no unit)
 static const uint8_t                  PING_MESSAGE[PREFIX_SIZE] = "PING";                          // bytes
 static const uint8_t                  PONG_MESSAGE[PREFIX_SIZE] = "PONG";                          // bytes
@@ -244,6 +249,14 @@ static void ping_pong_tx( smtc_rac_scheduling_t scheduling, uint32_t delay )
 
     // call the rac API
     PING_PONG_PRINT( "sending (value=%d, delay=%dms)\n", ping_pong.counter, delay );
+    
+#if DT_HAS_CHOSEN( zephyr_display )
+    char buf[32];
+    snprintf(buf, sizeof(buf), "TX %s: %-5d    ", ping_pong.is_manager ? "PING" : "PONG", ping_pong.counter);
+    oled_show_str(0, 0, ping_pong.is_manager ? "ROLE: MASTER     " : "ROLE: SUBORDINATE", 1);
+    oled_show_str(0, 3, buf, 1);
+#endif
+
     smtc_rac_return_code_t error_code =
         SMTC_SW_PLATFORM( smtc_rac_submit_radio_transaction( ping_pong.radio_access_id ) );
     SMTC_MODEM_HAL_PANIC_ON_FAILURE( error_code == SMTC_RAC_SUCCESS );
@@ -335,6 +348,13 @@ static void post_ping_pong_callback( rp_status_t status )
         else
         {
             PING_PONG_PRINT( "payload is correct, continuing\n" );
+            
+#if DT_HAS_CHOSEN( zephyr_display )
+            char rx_buf[32];
+            snprintf(rx_buf, sizeof(rx_buf), "RX: %c%c%c%c %-5d   ", prefix_received[0], prefix_received[1], prefix_received[2], prefix_received[3], counter_received);
+            oled_show_str(0, 6, rx_buf, 1);
+#endif
+
             ping_pong.counter += 1;
             ping_pong.consecutive_fails = 0;
         }
@@ -372,6 +392,11 @@ static void post_ping_pong_callback( rp_status_t status )
 
     case RP_STATUS_RX_TIMEOUT:
         PING_PONG_PRINT( "usp/rac: new event: transaction (reception) has ended (timeout)\n" );
+        
+#if DT_HAS_CHOSEN( zephyr_display )
+        oled_show_str(0, 6, "RX TIMEOUT          ", 1);
+#endif
+
         ping_pong.consecutive_fails += 1;
 
         if( ping_pong.is_manager == false )

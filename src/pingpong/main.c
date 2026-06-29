@@ -55,12 +55,16 @@
 #include <zephyr/lorawan_lbm/lorawan_hal_init.h>
 #include <smtc_modem_hal.h>
 
+#if DT_HAS_CHOSEN( zephyr_display )
+#include "oled_display.h"
+#endif
+
 /*
  * -----------------------------------------------------------------------------
  * --- PRIVATE MACROS-----------------------------------------------------------
  */
 
-#define FORCE_MASTER_MODE 0  // Set to 1 to force this device as Master on startup
+#define FORCE_MASTER_MODE 1  // Set to 1 to force this device as Master on startup
 
 LOG_MODULE_REGISTER( usp, LOG_LEVEL_INF );
 
@@ -149,6 +153,12 @@ int main( void )
     set_led( SMTC_PF_LED_RX, false );
 
     // initialize and start applications
+#if DT_HAS_CHOSEN( zephyr_display )
+    oled_display_init( );
+    oled_cls( );
+    oled_show_str( 10, 3, "PING-PONG DEMO", 1 );
+#endif
+
     ping_pong_init( );
     periodic_uplink_init( );
 

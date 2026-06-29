@@ -4,6 +4,17 @@ cmake_minimum_required(VERSION 3.20)
 # Zephyr Configuration
 # ==========================================================
 set(ZEPHYR_BASE /home/dashtrad/lora_usp_workspace/zephyr)
+
+# ==========================================================
+# Semtech Driver Configuration (USP)
+# ==========================================================
+set(VENDOR_WS /home/dashtrad/lora_usp_workspace)
+list(APPEND ZEPHYR_EXTRA_MODULES 
+    ${VENDOR_WS}/application
+    ${VENDOR_WS}/modules/lib/usp
+    ${VENDOR_WS}/modules/lib/lora-basics-modem
+)
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(lr2021-tdoa-firmware)
@@ -23,7 +34,6 @@ if(APP_TYPE STREQUAL "ranging")
         src/ranging/oled_display.c
         src/ranging/app_ranging_hopping.c
     )
-    
     zephyr_include_directories(src/ranging/)
     
     # Ranging specific definitions
@@ -36,6 +46,7 @@ else()
         src/pingpong/main.c
         src/pingpong/app_periodic_uplink.c
         src/pingpong/app_ping_pong.c
+        src/pingpong/oled_display.c
     )
     
     zephyr_include_directories(src/pingpong/)
@@ -44,8 +55,3 @@ else()
     target_compile_definitions(app PRIVATE SUBORDINATE_PROCESSING_TIME_MS=50)
 endif()
 
-# ==========================================================
-# Semtech Driver Configuration (USP)
-# ==========================================================
-set(VENDOR_WS /home/dashtrad/lora_usp_workspace)
-list(APPEND ZEPHYR_EXTRA_MODULES ${VENDOR_WS}/application)
