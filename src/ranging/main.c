@@ -161,6 +161,10 @@ void button_pressed( const struct device* dev, struct gpio_callback* cb, uint32_
 
 int main( void )
 {
+    printf("\r\n\r\n=============================\r\n");
+    printf("HELLO FROM NUCLEO L073RZ!\r\n");
+    printf("=============================\r\n");
+
     if( configure_user_button( ) != 0 )
     {
         LOG_ERR( "Issue when configuring user button, aborting\n" );

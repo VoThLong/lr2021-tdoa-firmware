@@ -1,0 +1,2 @@
+# Load Sysbuild board Kconfig descriptions.
+osource "/home/dashtrad/lora_usp_workspace/zephyr/boards/st/nucleo_l073rz/Kconfig.sysbuild"

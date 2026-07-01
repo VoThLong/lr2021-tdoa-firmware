@@ -20,7 +20,7 @@ echo "Cleaning old build directory..."
 rm -rf build/
 
 echo "Building application: RANGING (MANAGER)..."
-west build -b xiao_nrf54l15/nrf54l15/cpuapp --shield semtech_wio_lr2021 -- -DAPP_TYPE=ranging -DEXTRA_CFLAGS=-DRANGING_DEVICE_MODE=2
+west build -b xiao_nrf54l15/nrf54l15/cpuapp --shield semtech_wio_lr2021 -- -DAPP_TYPE=ranging -DEXTRA_CFLAGS="-DRANGING_DEVICE_MODE=2 -DRF_FREQ_IN_HZ=915000000"
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Build failed."
@@ -33,7 +33,7 @@ if [ ! -z "$BOARD_UID" ]; then
 fi
 
 echo "Flashing target device..."
-west flash $UID_ARG -- --erase
+west flash $UID_ARG
 
 if [ $? -eq 0 ]; then
     echo "SUCCESS: Operation completed."

@@ -136,6 +136,12 @@ void button_pressed( const struct device* dev, struct gpio_callback* cb, uint32_
 
 int main( void )
 {
+    // Wait for picocom to attach
+    k_msleep(2000);
+    printk("TRACE: Wake up after 2s!\n");
+    printk("====== ENTERING MAIN ======\n");
+    int err;
+    uint32_t reset_cause;
     if( configure_user_button( ) != 0 )
     {
         LOG_ERR( "Issue when configuring user button, aborting\n" );
@@ -144,11 +150,20 @@ int main( void )
 
     SMTC_HAL_TRACE_INFO( "===== Ping Pong example =====\r\n" );
 
+    printk("TRACE: before SMTC_SW_PLATFORM_INIT\n");
     SMTC_SW_PLATFORM_INIT( );
+    printk("TRACE: after SMTC_SW_PLATFORM_INIT, before smtc_rac_init\n");
     SMTC_SW_PLATFORM_VOID( smtc_rac_init( ) );
 
+    printk("TRACE: before init_leds\n");
     // initialize LEDs
     init_leds( );
+
+    printk("TRACE: before ping_pong_init\n");
+    ping_pong_init( );
+    printk("TRACE: before periodic_uplink_init\n");
+    periodic_uplink_init( );
+    printk("TRACE: before loop\n");
     set_led( SMTC_PF_LED_TX, false );
     set_led( SMTC_PF_LED_RX, false );
 

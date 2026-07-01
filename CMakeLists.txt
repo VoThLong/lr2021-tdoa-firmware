@@ -15,6 +15,7 @@ list(APPEND ZEPHYR_EXTRA_MODULES
     ${VENDOR_WS}/modules/lib/lora-basics-modem
 )
 
+list(APPEND BOARD_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(lr2021-tdoa-firmware)
@@ -37,7 +38,7 @@ if(APP_TYPE STREQUAL "ranging")
     zephyr_include_directories(src/ranging/)
     
     # Ranging specific definitions
-    target_compile_definitions(app PRIVATE DISABLE_RANGING_LOG)
+    # target_compile_definitions(app PRIVATE DISABLE_RANGING_LOG)
 
 else()
     message(STATUS "Configuring application: PINGPONG")

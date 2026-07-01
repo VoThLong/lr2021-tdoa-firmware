@@ -1,0 +1,58 @@
+cmake:
+  application:
+    configuration-dir: '/home/dashtrad/lora_usp_workspace/zephyr/samples/basic/blinky'
+    source-dir: '/home/dashtrad/lora_usp_workspace/zephyr/samples/basic/blinky'
+  board:
+    name: 'nucleo_l073rz'
+    path:
+     - '/home/dashtrad/lora_usp_workspace/zephyr/boards/st/nucleo_l073rz'
+    qualifiers: 'stm32l073xx'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/bindings'
+    files:
+     - '/home/dashtrad/lora_usp_workspace/zephyr/boards/st/nucleo_l073rz/nucleo_l073rz.dts'
+    include-dirs:
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/ambiq/dts'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/atmel/include'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/bouffalolab/include'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/bouffalolab/include/zephyr'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/gigadevice/include'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/microchip/include'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/microchip/dts'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/nuvoton/dts'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/nxp/dts'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/stm32/dts'
+     - '/home/dashtrad/lora_usp_workspace/modules/hal/ti/dts'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/include'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/include/zephyr'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/common'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/vendor'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/rx'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/x86'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/xtensa'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/sparc'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/riscv'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/posix'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/arm64'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/arm'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts/arc'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/dts'
+  kconfig:
+    files:
+     - '/home/dashtrad/lora_usp_workspace/zephyr/boards/st/nucleo_l073rz/nucleo_l073rz_defconfig'
+     - '/home/dashtrad/lora_usp_workspace/zephyr/samples/basic/blinky/prj.conf'
+    user-files:
+     - '/home/dashtrad/lora_usp_workspace/zephyr/samples/basic/blinky/prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: '/home/dashtrad/.local/zephyr-sdk-1.0.1'
+  zephyr:
+    version: '4.4.0'
+    zephyr-base: '/home/dashtrad/lora_usp_workspace/zephyr'
+version: '0.1.0'
+west:
+  command: '/home/dashtrad/lora_usp_workspace/.venv/bin/west build -b nucleo_l073rz /home/dashtrad/lora_usp_workspace/zephyr/samples/basic/blinky -d build_blinky -p'
+  topdir: '/home/dashtrad/lora_usp_workspace'
+  version: '1.5.0'

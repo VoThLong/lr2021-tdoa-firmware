@@ -33,7 +33,7 @@ if [ ! -z "$BOARD_UID" ]; then
 fi
 
 echo "Flashing target device..."
-west flash $UID_ARG -- --erase
+west flash $UID_ARG
 
 if [ $? -eq 0 ]; then
     echo "SUCCESS: Operation completed."
